@@ -37,10 +37,11 @@ namespace ProductManagementAPI.Controllers
         /// <param name="product">Product.</param>
         /// <returns>Created Product.</returns>
         [HttpPost]
-        public async Task<IActionResult> CreateProduct(Product product)
+        public async Task<IActionResult> CreateProduct(ProductDetails productdetails)
         {
             try
             {
+                var product = MapToProduct(productdetails);
                 Logger.LogDebug("ProductsController.CreateProduct started");
                 var createdProduct = await _service.CreateProductAsync(product);
                 if (createdProduct == null)
@@ -115,12 +116,13 @@ namespace ProductManagementAPI.Controllers
         /// <param name="updatedProduct">Updated product details.</param>
         /// <returns>Updated product.</returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, Product updatedProduct)
+        public async Task<IActionResult> UpdateProduct(int id, ProductDetails updatedProductDetails)
         {
             try
             {
                 Logger.LogDebug("ProductsController.UpdateProduct started");
-                var product = await _service.UpdateProductAsync(id, updatedProduct);
+                var productDetails = MapToProduct(updatedProductDetails);
+                var product = await _service.UpdateProductAsync(id, productDetails);
                 if (product == null)
                 {
                     Logger.LogError("ProductsController.UpdateProduct failed to update the product");
@@ -214,6 +216,18 @@ namespace ProductManagementAPI.Controllers
             {
                 throw new Exception("An error occurred while incrementing the product stock by id.", ex);
             }
+        }
+
+        private Product MapToProduct(ProductDetails productDetails)
+        {
+            return new Product
+            {
+                Name = productDetails.Name,
+                Description = productDetails.Description,
+                StockAvailable = productDetails.StockAvailable,
+                Category = productDetails.Category,
+                Price = productDetails.Price,
+            };
         }
     }
 }
