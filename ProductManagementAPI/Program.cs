@@ -5,6 +5,7 @@ using ProductManagementAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 // Add services
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
